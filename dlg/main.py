@@ -17,7 +17,7 @@ print(torch.__version__, torchvision.__version__)
 from utils import label_to_onehot, cross_entropy_for_onehot
 
 parser = argparse.ArgumentParser(description='Deep Leakage from Gradients.')
-parser.add_argument('--index', type=int, default="25",
+parser.add_argument('--index', type=int, default="24",
                     help='the index for leaking images on CIFAR.')
 parser.add_argument('--image', type=str,default="",
                     help='the path to customized image.')
@@ -101,5 +101,5 @@ for i in range(30):
     plt.imshow(history[i])
     plt.title("iter=%d" % (i * 10))
     plt.axis('off')
-plt.savefig('./result.png')
+plt.savefig('./result_20.png')
 #plt.show()
