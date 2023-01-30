@@ -101,5 +101,5 @@ for i in range(30):
     plt.imshow(history[i])
     plt.title("iter=%d" % (i * 10))
     plt.axis('off')
-
-plt.show()
+plt.savefig('./result.png')
+#plt.show()
