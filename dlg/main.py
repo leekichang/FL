@@ -17,7 +17,7 @@ print(torch.__version__, torchvision.__version__)
 from utils import label_to_onehot, cross_entropy_for_onehot
 
 parser = argparse.ArgumentParser(description='Deep Leakage from Gradients.')
-parser.add_argument('--index', type=int, default="24",
+parser.add_argument('--index', type=int, default="25",
                     help='the index for leaking images on CIFAR.')
 parser.add_argument('--image', type=str,default="",
                     help='the path to customized image.')
@@ -79,11 +79,11 @@ for iters in range(300):
 
         dummy_pred = net(dummy_data) 
         dummy_onehot_label = F.softmax(dummy_label, dim=-1)
-        dummy_loss = criterion(dummy_pred, dummy_onehot_label) 
+        dummy_loss = criterion(dummy_pred, dummy_onehot_label)
         dummy_dy_dx = torch.autograd.grad(dummy_loss, net.parameters(), create_graph=True)
         
         grad_diff = 0
-        for gx, gy in zip(dummy_dy_dx, original_dy_dx): 
+        for gx, gy in zip(dummy_dy_dx, original_dy_dx):
             grad_diff += ((gx - gy) ** 2).sum()
         grad_diff.backward()
         
@@ -101,5 +101,5 @@ for i in range(30):
     plt.imshow(history[i])
     plt.title("iter=%d" % (i * 10))
     plt.axis('off')
-plt.savefig('./result_20.png')
+plt.savefig('./img.png')
 #plt.show()
