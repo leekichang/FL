@@ -28,15 +28,13 @@ class Server():
         self.criterion = nn.CrossEntropyLoss()              # TODO: utils.get_loss(cfg['loss']:str)
         
         self.Algorithm = FedAvg.FedAvg                      # FedAVG 같은 aggrrgation method 들어감 TODO: utils.get_algortihm() 작성
-        self.received_models = None                         # Client.upload_model() 결과가 여기 들어감
         
-        self.mp_flag = True
+        self.mp_flag = False
 
     def setup(self):
         self.clients = self.create_clients()
         self.data = FEMNIST(self.test_DM.global_test_data)
         self.dataloader = DataLoader(self.data, batch_size=256, shuffle=False)
-        
         self.transmit_model()
         self.setup_clients()
         
@@ -49,6 +47,7 @@ class Server():
             data_info = {'train':self.train_DM.data[user],\
                          'test':self.test_DM.data[user]}
             clients[user] = Client(client_id=user, model=self.global_model, data_info=data_info, device=self.device)
+            clients[user].model = copy.deepcopy(self.global_model)
         return clients
     
     def setup_clients(self)->None:
@@ -58,10 +57,12 @@ class Server():
     def transmit_model(self, sampled_clients:list=None)->None:
         if sampled_clients == None:
             for client in tqdm(self.clients, leave=False):
-                self.clients[client].model = copy.deepcopy(self.global_model)
+                self.clients[client].model.load_state_dict(copy.deepcopy(self.global_model.state_dict()))
+                # self.clients[client].model = copy.deepcopy(self.global_model)
         else:
             for client in tqdm(sampled_clients, leave=False):
-                self.clients[client].model = copy.deepcopy(self.global_model)
+                self.clients[client].model.load_state_dict(copy.deepcopy(self.global_model.state_dict()))
+                # self.clients[client].model = copy.deepcopy(self.global_model)
 
         
     def sample_clients(self, n_participant:int=10)->np.array:
@@ -141,10 +142,20 @@ class Server():
         # else:
         print("TEST WITH SP!\n")
         self.test_selected_models(sampled_clients)
-        
+                
         mixing_coefficients = [len(self.clients[client]) / selected_total_size for client in sampled_clients]
         
+        # print(f"mixing_coefficients:{mixing_coefficients}")
+        # print(f'CLIENT {sampled_clients[0]} WEIGHT')
+        # print(f'CLIENT {self.clients[sampled_clients[0]].model.state_dict()["fc1.weight"]} WEIGHT')
+        # print(f'CLIENT {sampled_clients[1]} WEIGHT')
+        # print(f'CLIENT {self.clients[sampled_clients[1]].model.state_dict()["fc1.weight"]} WEIGHT')
+        # print(f'Server Weight before update')
+        # print(f'CLIENT {self.global_model.state_dict()["fc1.weight"]} WEIGHT')
         self.average_model(sampled_clients, mixing_coefficients)
+        # print(f'Server Weight after update')
+        # print(f'CLIENT {self.global_model.state_dict()["fc1.weight"]} WEIGHT')
+        self.transmit_model()
         
     def global_test(self):
         self.global_model.eval()
@@ -167,7 +178,10 @@ class Server():
             self.test_loss = np.average(loss_trace)
             print(f'Global Test Result | Acc:{self.acc*100:.2f}, Loss:{self.test_loss:.4f}')
             self.global_model.to('cpu')
-
+    def fit(self):
+        pass
+        
+    
 # class Server():
 #     def __init__(self, DM_dict:dict, algorithm:str=None):
 #         self.train_DM = DM_dict['train']

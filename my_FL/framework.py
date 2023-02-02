@@ -33,30 +33,30 @@ class FLFramework():
 if __name__ == '__main__':
     autograd.set_detect_anomaly(True)
     mp.set_start_method('spawn')
-
-    PATH = cfg.DATAPATH['femnist']
     
+    PATH = cfg.DATAPATH['femnist']
+        
     file_dict = get_files(PATH)
         
     TRAIN_DM = DataManager(file_dict['train'], is_train=True)
     TEST_DM = DataManager(file_dict['test'], is_train=False)
     DM_dict = {'train':TRAIN_DM,
-               'test':TEST_DM}
+            'test':TEST_DM}
     print("DATA READY")
-    
+        
     print(f"WORKING WITH {cfg.DEVICE}")
     
     server = Server(DM_dict)
     print("SERVER READY")
-    
+        
     server.setup()
     print('===== ROUND 0 =====\nServer Setup Complete!')
     
-    for i in range(100):
+    for i in range(10):
         print(f'===== ROUND {i+1} START! =====\n')
         server.train_federated_model()
         server.global_test()
-        print()
+        
     
     # ROUND = 5
     # P = 50
