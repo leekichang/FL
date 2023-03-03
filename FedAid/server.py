@@ -11,7 +11,6 @@ from tqdm import tqdm
 from datamanager import *
 from datetime import datetime
 from models.simpleNet import Net
-from Fed_Algorithms import FedAvg
 import sklearn.metrics as metrics
 from collections import OrderedDict
 from multiprocessing import Process
@@ -29,7 +28,6 @@ class Server():
         self.device         = cfg.DEVICE
         self.global_model   = utils.get_model(args_dict['model'])
         self.criterion      = nn.CrossEntropyLoss()              # TODO: utils.get_loss(cfg['loss']:str)
-        self.Algorithm      = FedAvg.FedAvg                      # FedAVG 같은 aggrrgation method 들어감 TODO: utils.get_algortihm() 작성
         self.mp_flag        = False
         self.round          = 0
         self.rounds         = 10

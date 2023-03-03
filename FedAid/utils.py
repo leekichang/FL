@@ -27,8 +27,8 @@ def parse_args():
     parser.add_argument('--dataset', default='femnist', type=str,
                         choices=['femnist'])
     parser.add_argument('--T_type', default=0, type=int)
-    #args = parser.parse_args(args=[])
-    args = parser.parse_args()
+    args = parser.parse_args(args=[])
+    #args = parser.parse_args()
     return args
 
 def args2dict(args:argparse.Namespace):

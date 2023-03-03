@@ -19,6 +19,8 @@ i.e.
 
 Make sure to delete the rem_user_data, sampled_data, test, and train subfolders in the data directory before re-running preprocess.sh
 
+./preprocess.sh -s niid --sf 0.2 -k 0 -t sample --smplseed 6206 --spltseed 230129
+
 ## Notes
 - More details on i.i.d. versus non-i.i.d.:
   - In the i.i.d. sampling scenario, each datapoint is equally likely to be sampled. Thus, all users have the same underlying distribution of data.

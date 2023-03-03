@@ -27,6 +27,9 @@ class Client():
         self.trainset, self.testset     = FEMNIST(self.train_info), FEMNIST(self.test_info)
         self.selected_rounds            = []
         
+        self.aid                        = torch.zeros((32,32))
+        self.epsilon                    = 0.08
+        
     @property
     def model(self):             
         return self.__model
@@ -82,6 +85,9 @@ class Client():
         
         print(f'=== Client {self.id} Finished Training {len(self)} samples with T = {self.T} ===')
         print(f'client:{self.id} | Train Acc:{train_acc*100:.2f} | Train Loss:{train_loss:.4f}')
+    
+    def get_aid(self):
+        pass
     
     def local_test(self):
         self.model.eval()
